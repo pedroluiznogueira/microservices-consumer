@@ -51,6 +51,8 @@ public class ProductEventConsumer {
         ProductEventLog productEventLog = buildProductEventLog(envelope,
                 productEvent);
         productEventLogRepository.save(productEventLog);
+
+        log.info("created");
     }
 
     private ProductEventLog buildProductEventLog(Envelope envelope,
