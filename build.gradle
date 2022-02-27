@@ -27,7 +27,7 @@ sourceCompatibility = '1.8'
 
 bootJar {
 	baseName = 'consumer-service'
-	version =  '1.0.0'
+	version =  '2.0.0'
 }
 
 task unpack(type: Copy) {
