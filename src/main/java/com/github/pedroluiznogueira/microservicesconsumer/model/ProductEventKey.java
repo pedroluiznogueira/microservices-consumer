@@ -27,4 +27,12 @@ public class ProductEventKey {
     public void setSk(String sk) {
         this.sk = sk;
     }
+
+    @Override
+    public String toString() {
+        return "ProductEventKey{" +
+                "pk='" + pk + '\'' +
+                ", sk='" + sk + '\'' +
+                '}';
+    }
 }

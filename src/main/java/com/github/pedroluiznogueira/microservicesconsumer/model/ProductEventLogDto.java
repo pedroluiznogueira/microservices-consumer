@@ -6,6 +6,7 @@ public class ProductEventLogDto {
 
     private final String code;
     private final EventType eventType;
+    private final String messageId;
     private final long productId;
     private final String username;
     private final long timestamp;
@@ -13,6 +14,7 @@ public class ProductEventLogDto {
     public ProductEventLogDto(ProductEventLog productEventLog) {
         this.code = productEventLog.getPk();
         this.eventType = productEventLog.getEventType();
+        this.messageId = productEventLog.getMessageId();
         this.productId = productEventLog.getProductId();
         this.username = productEventLog.getUsername();
         this.timestamp = productEventLog.getTimestamp();

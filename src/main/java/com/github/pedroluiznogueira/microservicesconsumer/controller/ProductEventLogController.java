@@ -40,8 +40,7 @@ public class ProductEventLogController {
     }
 
     @GetMapping("/events/{code}/{event}")
-    public List<ProductEventLogDto> findByCodeAndEventType(@PathVariable String code,
-                                                           @PathVariable String event) {
+    public List<ProductEventLogDto> findByCodeAndEventType(@PathVariable String code, @PathVariable String event) {
         return productEventLogRepository.findAllByPkAndSkStartsWith(code, event)
                 .stream()
                 .map(ProductEventLogDto::new)

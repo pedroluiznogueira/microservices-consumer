@@ -40,29 +40,9 @@ public class DynamoDbConfigLocalStack {
                                 Regions.US_EAST_1.getName()))
                 .build();
 
-//        DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
-//
-//        List<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
-//        attributeDefinitions.add(new AttributeDefinition().withAttributeName("pk").withAttributeType(ScalarAttributeType.S));
-//        attributeDefinitions.add(new AttributeDefinition().withAttributeName("sk").withAttributeType(ScalarAttributeType.S));
-//
-//        List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
-//        keySchema.add(new KeySchemaElement().withAttributeName("pk").withKeyType(KeyType.HASH));
-//        keySchema.add(new KeySchemaElement().withAttributeName("sk").withKeyType(KeyType.RANGE));
-//
-//        CreateTableRequest request = new CreateTableRequest()
-//                .withTableName("product-events")
-//                .withKeySchema(keySchema)
-//                .withAttributeDefinitions(attributeDefinitions)
-//                .withBillingMode(BillingMode.PAY_PER_REQUEST);
-//
-//        Table table = dynamoDB.createTable(request);
-//
-//        try {
-//            table.waitForActive();
-//        } catch (InterruptedException e) {
-//            LOG.error(e.getMessage());
-//        }
+        DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
+
+        if (tableNotCreated(dynamoDB)) createTable(dynamoDB);
     }
 
     @Bean
@@ -84,4 +64,32 @@ public class DynamoDbConfigLocalStack {
         return this.amazonDynamoDB;
     }
 
+    private Boolean tableNotCreated(DynamoDB dynamoDB) {
+        Table table = dynamoDB.getTable("product-events");
+        return table == null ? true : false;
+    }
+
+    private void createTable(DynamoDB dynamoDB) {
+        List<AttributeDefinition> attributeDefinitions= new ArrayList<AttributeDefinition>();
+        attributeDefinitions.add(new AttributeDefinition().withAttributeName("pk").withAttributeType(ScalarAttributeType.S));
+        attributeDefinitions.add(new AttributeDefinition().withAttributeName("sk").withAttributeType(ScalarAttributeType.S));
+
+        List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
+        keySchema.add(new KeySchemaElement().withAttributeName("pk").withKeyType(KeyType.HASH));
+        keySchema.add(new KeySchemaElement().withAttributeName("sk").withKeyType(KeyType.RANGE));
+
+        CreateTableRequest request = new CreateTableRequest()
+                .withTableName("product-events")
+                .withKeySchema(keySchema)
+                .withAttributeDefinitions(attributeDefinitions)
+                .withBillingMode(BillingMode.PAY_PER_REQUEST);
+
+        Table table = dynamoDB.createTable(request);
+
+        try {
+            table.waitForActive();
+        } catch (InterruptedException e) {
+            LOG.error(e.getMessage());
+        }
+    }
 }

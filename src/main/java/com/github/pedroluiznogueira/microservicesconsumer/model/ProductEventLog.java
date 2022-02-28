@@ -16,6 +16,9 @@ public class ProductEventLog {
     @DynamoDBAttribute(attributeName = "eventType")
     private EventType eventType;
 
+    @DynamoDBAttribute(attributeName = "messageId")
+    private String messageId;
+
     @DynamoDBAttribute(attributeName = "productId")
     private long productId;
 
@@ -62,6 +65,14 @@ public class ProductEventLog {
         this.eventType = eventType;
     }
 
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
     public long getProductId() {
         return productId;
     }
@@ -92,6 +103,18 @@ public class ProductEventLog {
 
     public void setTtl(long ttl) {
         this.ttl = ttl;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductEventLog{" +
+                "productEventKey=" + productEventKey +
+                ", eventType=" + eventType +
+                ", productId=" + productId +
+                ", username='" + username + '\'' +
+                ", timestamp=" + timestamp +
+                ", ttl=" + ttl +
+                '}';
     }
 }
 

@@ -35,34 +35,29 @@ public class ProductEventConsumer {
     @JmsListener(destination = "${aws.sqs.queue.product.events.name}")
     public void receiveProductEvent(TextMessage textMessage) throws JMSException, IOException {
 
-        SnsMessage snsMessage = objectMapper.readValue(textMessage.getText(),
-                SnsMessage.class);
+        SnsMessage snsMessage = objectMapper.readValue(textMessage.getText(), SnsMessage.class);
 
-        Envelope envelope = objectMapper.readValue(snsMessage.getMessage(),
-                Envelope.class);
+        Envelope envelope = objectMapper.readValue(snsMessage.getMessage(), Envelope.class);
 
-        ProductEvent productEvent = objectMapper.readValue(
-                envelope.getData(), ProductEvent.class);
+        ProductEvent productEvent = objectMapper.readValue(envelope.getData(), ProductEvent.class);
 
-        log.info("Product event received - Event: {} - ProductId: {} - " +
-                        "MessageId: {}", envelope.getEventType(),
-                productEvent.getProductId(), snsMessage.getMessageId());
+        log.info("Product event received - Event: {} - ProductId: {} - " + "MessageId: {}", envelope.getEventType(), productEvent.getProductId(), snsMessage.getMessageId());
 
-        ProductEventLog productEventLog = buildProductEventLog(envelope,
-                productEvent);
-        productEventLogRepository.save(productEventLog);
+        ProductEventLog productEventLog = buildProductEventLog(envelope, productEvent, snsMessage.getMessageId());
+        ProductEventLog persistedProductEventLog = productEventLogRepository.save(productEventLog);
 
-        log.info("created");
+        log.info("Product event persisted - " + persistedProductEventLog);
     }
 
     private ProductEventLog buildProductEventLog(Envelope envelope,
-                                                 ProductEvent productEvent) {
+                                                 ProductEvent productEvent, String messageId) {
         long timestamp = Instant.now().toEpochMilli();
 
         ProductEventLog productEventLog = new ProductEventLog();
         productEventLog.setPk(productEvent.getCode());
         productEventLog.setSk(envelope.getEventType() + "_" + timestamp);
         productEventLog.setEventType(envelope.getEventType());
+        productEventLog.setMessageId(messageId);
         productEventLog.setProductId(productEvent.getProductId());
         productEventLog.setUsername(productEvent.getUsername());
         productEventLog.setTimestamp(timestamp);
